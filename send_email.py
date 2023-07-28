@@ -26,17 +26,24 @@ def send_email(sender_email, sender_password, receiver_email, subject, body, smt
     except Exception as e:
         print(f"An unexpected error occurred while sending email: {str(e)}")
 
-def read_email_config(filename="config.json"):
-    try:
-        with open(filename, "r") as config_file:
-            config = json.load(config_file)
-            return config
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"Error while reading email configuration: {str(e)}")
-        return None
+def read_config(file_path):
+    with open(file_path, 'r') as file:
+        return json.load(file)
+    
+def merge_configs(*config_files):
+    merged_config = {}
+    for file_path in config_files:
+        config = read_config(file_path)
+        merged_config.update(config)
+    return merged_config
 
 def main():
-    config = read_email_config()
+    file_paths = [
+        "./config/smtp_config.json",
+        "./config/address_config.json",
+        "./config/message_config.json"
+    ]
+    config = merge_configs(*file_paths)
 
     if not config:
         print("Error: Invalid email configuration.")
@@ -47,13 +54,13 @@ def main():
     sender_password = config.get("sender_password")
     smtp_server = config.get("smtp_server")
     smtp_port = config.get("smtp_port")
+    subject = config.get("subject")
+    body = config.get("body")
 
     if not all([sender_email, receiver_email, sender_password, smtp_server, smtp_port]):
         print("Error: Incomplete email configuration.")
         return
 
-    subject = "Test Email from Python"
-    body = "This is a test email sent from a Python application using smtplib."
 
     send_email(sender_email, sender_password, receiver_email, subject, body, smtp_server, smtp_port)
 
