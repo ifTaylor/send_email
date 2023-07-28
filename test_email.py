@@ -1,6 +1,7 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from psw import sender_password
 
 def send_email(sender_email, sender_password, receiver_email, subject, body):
     try:
@@ -27,7 +28,6 @@ def send_email(sender_email, sender_password, receiver_email, subject, body):
         print(f"An error occurred: {str(e)}")
 
 sender_email = "tjt.email1@gmail.com"
-
 receiver_email = "tturner@bastiansolutions.com"
 
 subject = "Test Email from Python"
